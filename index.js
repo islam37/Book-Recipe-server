@@ -62,7 +62,7 @@ async function run() {
       }
     });
 
-    // UPDATE  Update a recipe by ID
+    // UPDATE  Update a recipe by ID.
     
     app.put('/recipes/:id', async (req, res) => {
       try {
