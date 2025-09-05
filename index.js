@@ -38,6 +38,17 @@ async function run() {
       }
     });
 
+    
+    // READ → Get all recipes
+    app.get('/recipes', async (req, res) => {
+      try {
+        const recipes = await recipesCollection.find().toArray();
+        res.send(recipes);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch recipes" });
+      }
+    });
+
 
   } catch (err) {
     console.error(err);
