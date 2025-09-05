@@ -63,21 +63,25 @@ async function run() {
     });
 
     // UPDATE  Update a recipe by ID
+    
     app.put('/recipes/:id', async (req, res) => {
       try {
         const id = req.params.id;
-        const updatedData = req.body;
+        const updatedData = { ...req.body };
+        delete updatedData._id; 
+
         const result = await recipesCollection.updateOne(
           { _id: new ObjectId(id) },
           { $set: updatedData }
         );
-        
+
         if (result.matchedCount === 0) {
           return res.status(404).send({ error: "Recipe not found" });
         }
-        
+
         res.send(result);
       } catch (error) {
+        console.error("Update error:", error);
         res.status(500).send({ error: "Failed to update recipe" });
       }
     });
