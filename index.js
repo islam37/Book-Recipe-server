@@ -27,7 +27,7 @@ async function run() {
     const db = client.db("recipeBookDB");
     const recipesCollection = db.collection("recipes");
 
-     // CREATE → Add a new recipe
+     // CREATE  Add a new recipe
     app.post('/recipes', async (req, res) => {
       try {
         const newRecipe = req.body;
@@ -39,13 +39,62 @@ async function run() {
     });
 
     
-    // READ → Get all recipes
+    // READ  Get all recipes
     app.get('/recipes', async (req, res) => {
       try {
         const recipes = await recipesCollection.find().toArray();
         res.send(recipes);
       } catch (error) {
         res.status(500).send({ error: "Failed to fetch recipes" });
+      }
+    });
+
+    
+    // READ  Get single recipe by ID
+    app.get('/recipes/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const recipe = await recipesCollection.findOne({ _id: new ObjectId(id) });
+        if (!recipe) return res.status(404).send({ error: "Recipe not found" });
+        res.send(recipe);
+      } catch (error) {
+        res.status(500).send({ error: "Invalid ID format" });
+      }
+    });
+
+    // UPDATE  Update a recipe by ID
+    app.put('/recipes/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const updatedData = req.body;
+        const result = await recipesCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: updatedData }
+        );
+        
+        if (result.matchedCount === 0) {
+          return res.status(404).send({ error: "Recipe not found" });
+        }
+        
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to update recipe" });
+      }
+    });
+
+    // DELETE  Delete a recipe by ID
+    app.delete('/recipes/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const result = await recipesCollection.deleteOne({ _id: new ObjectId(id) });
+        
+        if (result.deletedCount === 0) {
+          return res.status(404).send({ error: "Recipe not found" });
+        }
+        
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to delete recipe" });
       }
     });
 
