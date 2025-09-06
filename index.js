@@ -1,4 +1,5 @@
 const express = require('express');
+//const serverless = require('serverless-http'); 
 const app = express();
 require('dotenv').config(); 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb'); // Added ObjectId here
@@ -116,3 +117,6 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Recipe book server is running on port: ${port}`);
 });
+
+
+//module.exports = serverless(app);
